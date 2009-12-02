@@ -63,7 +63,7 @@ if (!class_exists("FPManager")) {
     } 
 
     function add_js() {
-      echo file_get_contents('/home/kirilisa/public_html/_ADDON/kirilisa/wp-content/plugins/fp-manager/functions.js');
+      echo file_get_contents(ABSPATH.'wp-content/plugins/frontpage-manager/functions.js');
     }
 
     function admin_page() {

@@ -22,7 +22,7 @@ The plugin will attempt to make sure that any tags that are interrupted by the p
 * Install directly from WordPress (go to Plugins -> Add New)
 OR
 * Install manually
-1. Unzip the plugin files to the `/wp-content/plugins/fp-manager/` directory
+1. Unzip the plugin files to the `/wp-content/plugins/frontpage-manager/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Set your preferred settings through the Frontpage Manager section under WordPress' Settings menu
 
@@ -46,7 +46,7 @@ No. At this time, you may select a single category or all categories for frontpa
 The link is contained within a div that has been given the class 'fpm`_`readon'. Simply add .fpm`_`readon{} to your theme's style.css and put whatever CSS styling you want in it.
 
 == Download ==
-[Version 0.9 beta](http://kirilisa.com/downloads/projects/wordpress/fp-manager_0.9.zip "Download version 0.9 beta") - 37.2KB zip file
+[Version 0.9 beta](http://kirilisa.com/downloads/projects/wordpress/frontpage-manager_0.9.zip "Download version 0.9 beta") - 37.2KB zip file
 
 == Changelog ==
 = 0.9 beta -- December 2009 = 
