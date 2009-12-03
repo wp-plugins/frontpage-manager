@@ -46,10 +46,13 @@ No. At this time, you may select a single category or all categories for frontpa
 The link is contained within a div that has been given the class 'fpm`_`readon'. Simply add .fpm`_`readon{} to your theme's style.css and put whatever CSS styling you want in it.
 
 == Download ==
-[Version 0.9 beta](http://kirilisa.com/downloads/projects/wordpress/frontpage-manager_0.9.zip "Download version 0.9 beta") - 37.2KB zip file
+[Version 0.91 beta](http://kirilisa.com/downloads/projects/wordpress/frontpage-manager_0.91.zip "Download version 0.91 beta")
 
 == Changelog ==
 = 0.9 beta -- December 2009 = 
 * Plugin launched
 
-
+= 0.91 beta -- December 2009 =
+* Removed default from 'Read more linktext' so you don't have to have any if you don't want
+* Allowed option 'all' for 'Tags to strip' for those who wish to get rid of all HTML markup
+* Fixed small bug where 'Tags to strip' field was disappearing inappropriately

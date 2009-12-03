@@ -65,6 +65,14 @@ foreach ($cats as $cat) {
 </tr>
 
 <tr>
+<td><strong>Tags to strip </strong></td>
+<td><input type="text" size="30" name="fpm_striptags" value="<?php echo $striptags; ?>" /> 
+(comma-separated, e.g. <em>img, div, hr</em>. Use <em>all</em> to remove all HTML)</td>
+</tr>
+
+<tr><td colspan="2">&nbsp;</td></tr>
+
+<tr>
 <td><strong>Limit post(s) by</strong></td> 
 
 <td>
@@ -76,6 +84,7 @@ foreach ($cats as $cat) {
   </select>
 </td>
 </tr>
+
 </table>
 
 <table id="truncate" <?php echo $option_display; ?>>
@@ -87,13 +96,10 @@ foreach ($cats as $cat) {
   <span id="fpm_num"><?php echo $postnum_blurb; ?></span><br />
 
   <input name="fpm_post_linktext" type="text" value="<?php echo $input_linktext; ?>" /> 
-  <strong>Read more linktext</strong> (default <em>view full post &raquo;</em>)<br />
+  <strong>Read more linktext</strong> <br />
   
   <input name="fpm_post_ending" type="text" value="<?php echo $input_ending; ?>" /> 
   <strong>Text ending</strong> (for word/character limit only)<br />
-    
-  <input type="text" name="fpm_striptags" value="<?php echo $striptags; ?>" /> 
-  <strong>Tags to strip </strong> (comma-separated, e.g. img, div, hr)
 </td>
 </tr>
 </table>
