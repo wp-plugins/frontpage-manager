@@ -76,7 +76,7 @@ if (!class_exists("FPManager")) {
 	$number = intval(trim($_POST['fpm_post_number']));
 	$ending = utf8_encode(trim($_POST['fpm_post_ending']));
 	$linktext = utf8_encode(trim($_POST['fpm_post_linktext']));	
-	$striptags = utf8_encode(trim($_POST['fpm_striptags']));
+	$striptags = utf8_encode(trim(strtolower($_POST['fpm_striptags'])));
         
 	// default number
 	if ($number == '') {
@@ -85,9 +85,9 @@ if (!class_exists("FPManager")) {
 	  else if ($cuttype == 'word') $number = '200';
 	}
 
-	// default readmore
+	// default readmore @@@ removed for 0.91 beta
 	if ($linktext == '') {
-	  $linktext = utf8_encode("view full post &raquo;");
+	  //$linktext = utf8_encode("view full post &raquo;");
 	}
 
 	// default numposts
@@ -130,7 +130,8 @@ if (!class_exists("FPManager")) {
 
 	// strip the tags
 	foreach ($tags as $tag) {	  
-	  $content = preg_replace('/<\/?'.$tag.'( [^>]+)?>/', '', $content, -1, $cnt);
+	  if ($tag == 'all') $content = strip_tags($content, '<p>');
+	  else $content = preg_replace('/<\/?'.$tag.'( [^>]+)?>/', '', $content, -1, $cnt);
 	}
       }      
 
@@ -205,7 +206,7 @@ if (!class_exists("FPManager")) {
       $type = get_option('show_on_front');
       $category = get_option('fpm_post_category');
       $numposts = intval(get_option('fpm_post_numposts'));
-
+      
       if (is_front_page() && $type == 'posts') {
 	if (preg_match('/^[1-9]{1}[0-9]*$/', $category)) $wp_query->query_vars['cat'] = $category;
 	$wp_query->query_vars['showposts'] = $numposts;
