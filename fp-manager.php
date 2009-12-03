@@ -4,7 +4,7 @@
    Plugin URI: http://kirilisa.com/projects/frontpage-manager/
    Description: Frontpage manager lets you customize how frontpage posts appear in a number 
    of ways: limiting by category, number of posts, number of words/characters/paragraphs.   
-   Version: 0.9 beta
+   Version: 0.91 beta
    Author: Elise Bosse
    Author URI: http://kirilisa.com
 
