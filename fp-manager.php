@@ -4,7 +4,7 @@
    Plugin URI: http://kirilisa.com/projects/frontpage-manager/
    Description: Frontpage manager lets you customize how frontpage posts appear in a number 
    of ways: limiting by category, number of posts, number of words/characters/paragraphs.   
-   Version: 0.91 beta
+   Version: 1.0
    Author: Elise Bosse
    Author URI: http://kirilisa.com
 
@@ -68,9 +68,10 @@ if (!class_exists("FPManager")) {
 
     function admin_page() {
       if(isset($_POST['fpm_submit'])) {
+	$cats = "";
 
 	// posted data
-	$category = $_POST['fpm_post_category'];
+	$categories = $_POST['fpm_post_category'];
 	$cuttype = $_POST['fpm_post_cuttype'];
 	$numposts = intval(trim($_POST['fpm_post_numposts']));
 	$number = intval(trim($_POST['fpm_post_number']));
@@ -93,8 +94,14 @@ if (!class_exists("FPManager")) {
 	// default numposts
 	$numposts = $numposts < 1 ? 1 : $numposts;
 
+	// make categories storable
+	foreach ($categories as $cat) {
+	  $cats .= trim($cat).",";
+	}
+	$cats = trim($cats, ",");
+
 	// update data in database
-	update_option("fpm_post_category", $category);	
+	update_option("fpm_post_category", $cats);	
 	update_option("fpm_post_cuttype", $cuttype);	
 	update_option("fpm_post_numposts", $numposts);
 	update_option("fpm_post_number", $number);
@@ -120,6 +127,7 @@ if (!class_exists("FPManager")) {
       $linktext = get_option('fpm_post_linktext');
       $ending = get_option('fpm_post_ending');
       $truncate = get_option('fpm_post_number');
+      $readon = TRUE;
 
       if ($cuttype == 'none') return $content;
 
@@ -136,14 +144,26 @@ if (!class_exists("FPManager")) {
       }      
 
       switch($cuttype) {
-      case "word":
+      case "word":	
 	$tmp = explode(' ', $content);       	
-	$final = implode(' ', array_slice($tmp, 0, $truncate));
-	$final = FPManager::fix_html($final, $ending);
+	$length = count($tmp);
+	if ($length > $truncate) {
+	  $final = implode(' ', array_slice($tmp, 0, $truncate));
+	  $final = FPManager::fix_html($final, $ending);
+	} else {
+	  $final = $content;
+	  $readon = FALSE;
+	}
 	break;
 
       case "letter":
-	$final = FPManager::fix_html(substr($content, 0, $truncate), $ending);
+	$length = strlen($content);
+	if ($length > $truncate) {
+	  $final = FPManager::fix_html(substr($content, 0, $truncate), $ending);
+	} else {
+	  $final = $content;
+	  $readon = FALSE;
+	}
 	break;
 
       case "paragraph":
@@ -151,16 +171,34 @@ if (!class_exists("FPManager")) {
 	$idx = 0;
 
 	$tmp = explode('</p>', $content);
-	while ($idx < $truncate) {
-	  $final .= $tmp[$idx]."</p>";
-	  $idx++;
+
+	// clean array of whitespace/null values
+	$tmp = array_values(array_filter(array_map("trim", $tmp)));
+
+	$length = count($tmp);
+	if ($length > $truncate) {
+	  while ($idx < $truncate) {
+	    $final .= $tmp[$idx]."</p>";
+	    $idx++;
+	  }
+	} else {
+	  $final = $content;
+	  $readon = FALSE;
 	}
 	break;
       }
             
-      $final .= "\r\n".'<div class="fpm_readon"><a href="' . get_permalink() . '" rel="nofollow">' . utf8_encode($linktext) . "</a></div>\r\n";
+      if ($readon) {
+	$final .= "\r\n".'<div class="fpm_readon"><a href="' . get_permalink() . '" rel="nofollow">';
+	$final .= utf8_encode($linktext) . "</a></div>\r\n";
+      }
 
       return $final;
+    }
+
+    function trim_val($val) {
+      //return trim($val);
+      return $val.'xyz';
     }
 
     function fix_html($str, $ending) {
@@ -204,11 +242,15 @@ if (!class_exists("FPManager")) {
       global $wp_query;
 
       $type = get_option('show_on_front');
-      $category = get_option('fpm_post_category');
+      //$category = get_option('fpm_post_category');
+      $categories = get_option("fpm_post_category"); 
       $numposts = intval(get_option('fpm_post_numposts'));
       
       if (is_front_page() && $type == 'posts') {
-	if (preg_match('/^[1-9]{1}[0-9]*$/', $category)) $wp_query->query_vars['cat'] = $category;
+	// limit categories shown
+	if (preg_match('/^([1-9]{1}[0-9]*,?)+$/', $categories)) $wp_query->query_vars['cat'] = $categories;
+	//print_r($wp_query->query_vars['cat']); exit;
+	// limit number of posts showd
 	$wp_query->query_vars['showposts'] = $numposts;
       }
     }
