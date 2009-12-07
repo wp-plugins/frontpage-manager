@@ -2,7 +2,7 @@
 <h2>Frontpage Manager</h2>
 
 <?php
-$postcat = get_option("fpm_post_category");
+$postcats = explode(",", get_option("fpm_post_category")); 
 $limitpostby = get_option("fpm_post_cuttype");
 $input_numposts = get_option("fpm_post_numposts");
 $input_number = get_option("fpm_post_number");
@@ -42,20 +42,25 @@ $option_display = $limitpostby == 'none' ? 'style="display:none;"' : '';
 
 <table>
 <tr>
-<td width="160"><strong>Select category</strong></td>
+<td width="160" valign="top">
+<strong>Select categories</strong><br />
+<a href="javascript:toggle_boxes('fpm_post_category', this);">toggle all</a>
+</td>
 
 <td>
-<select name="fpm_post_category">
-  <option value="all">all</option>
+<!--<select name="fpm_post_category">
+  <option value="all">all</option>-->
 <?php
 foreach ($cats as $cat) {
   $id = $cat->term_id;
   $name = $cat->name;
-  $cat_sel = $id == $postcat ? 'selected' : '';
-  echo "<option value=$id $cat_sel>$name</option>\r\n";
+  //$cat_sel = $id == $postcat ? 'selected' : '';
+  //echo "<option value=$id $cat_sel>$name</option>\r\n";
+  $cat_sel = in_array($id, $postcats) ? 'checked' : '';
+  echo "<input type=checkbox name=fpm_post_category[] value=$id $cat_sel />$name<br />\r\n";
 }
 ?>
-</select>
+<!--</select>-->
 </td>
 </tr>
 
