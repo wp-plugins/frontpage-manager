@@ -4,7 +4,7 @@
    Plugin URI: http://kirilisa.com/projects/frontpage-manager/
    Description: Frontpage manager lets you customize how frontpage posts appear in a number 
    of ways: limiting by category, number of posts, number of words/characters/paragraphs.   
-   Version: 1.0
+   Version: 1.1
    Author: Elise Bosse
    Author URI: http://kirilisa.com
 
@@ -40,6 +40,9 @@ if (!class_exists("FPManager")) {
       add_option("fpm_post_linktext", 'view full post &raquo;');
       add_option("fpm_post_ending", '');
       add_option("fpm_striptags", '');      
+      add_option("fpm_apply_nonfp", 1);      
+      add_option("fpm_static_limit", 0);      
+      add_option("fpm_nonfp_limit", 1);      
     }
 
     function deactivate() {
@@ -51,6 +54,9 @@ if (!class_exists("FPManager")) {
       delete_option("fpm_post_linktext");
       delete_option("fpm_post_ending");
       delete_option("fpm_striptags");      
+      delete_option("fpm_apply_nonfp");      
+      delete_option("fpm_static_limit");      
+      delete_option("fpm_nonfp_limit");      
     }
 
     function get_all_categories() {
@@ -78,7 +84,10 @@ if (!class_exists("FPManager")) {
 	$ending = utf8_encode(trim($_POST['fpm_post_ending']));
 	$linktext = utf8_encode(trim($_POST['fpm_post_linktext']));	
 	$striptags = utf8_encode(trim(strtolower($_POST['fpm_striptags'])));
-        
+	$apply_nonfp = intval(trim($_POST['fpm_apply_nonfp']));        
+	$static_limit = intval(trim($_POST['fpm_static_limit']));        
+	$nonfp_limit = intval(trim($_POST['fpm_nonfp_limit']));        
+
 	// default number
 	if ($number == '') {
 	  if ($cuttype == 'paragraph' || $cuttype == 'none') $number = '1';
@@ -95,22 +104,31 @@ if (!class_exists("FPManager")) {
 	$numposts = $numposts < 1 ? 1 : $numposts;
 
 	// make categories storable
-	foreach ($categories as $cat) {
-	  $cats .= trim($cat).",";
+	if (isset($categories) && !empty($categories)) {
+	  foreach ($categories as $cat) {
+	    $cats .= trim($cat).",";
+	  }
+	  $cats = trim($cats, ",");
+	  
+	  // store categories
+	  update_option("fpm_post_category", $cats);	
+	  
+	  // updated message
+	  echo "<div id=\"message\" class=\"updated fade\"><p><strong>Frontpage Manager options updated.</strong></p></div>";
+	} else {
+	  echo "<div id=\"message\" class=\"updated fade\"><p><strong>You must select at least 1 category.</strong></p></div>";
 	}
-	$cats = trim($cats, ",");
 
 	// update data in database
-	update_option("fpm_post_category", $cats);	
 	update_option("fpm_post_cuttype", $cuttype);	
 	update_option("fpm_post_numposts", $numposts);
 	update_option("fpm_post_number", $number);
 	update_option("fpm_post_linktext", $linktext);
 	update_option("fpm_post_ending", $ending);
 	update_option("fpm_striptags", $striptags);
-	
-	// updated message
-	echo "<div id=\"message\" class=\"updated fade\"><p><strong>Frontpage Manager options updated.</strong></p></div>";
+	update_option("fpm_apply_nonfp", $apply_nonfp);
+	update_option("fpm_static_limit", $static_limit);
+	update_option("fpm_nonfp_limit", $nonfp_limit);
       }
       
       $cats = FPManager::get_all_categories();
@@ -119,82 +137,98 @@ if (!class_exists("FPManager")) {
     }
 
 
-    function display($content) {
-      if (!is_front_page() || get_option('show_on_front') != 'posts') return $content;
-
+    // limit the posts, if necessary
+    function display($content) {      
       $striptags = get_option('fpm_striptags');
       $cuttype = get_option('fpm_post_cuttype');
       $linktext = get_option('fpm_post_linktext');
       $ending = get_option('fpm_post_ending');
       $truncate = get_option('fpm_post_number');
+      $static_limit = get_option('fpm_static_limit');
+      $nonfp_limit = get_option('fpm_nonfp_limit');
       $readon = TRUE;
+      $type = get_option('show_on_front');
 
-      if ($cuttype == 'none') return $content;
+      if ($cuttype == 'none') return $content;  // no limitation required    
 
-      if ($striptags != '') {
-	// make sure tags to strip are clean
-	$striptags = str_replace(array('<',' ','>'), '', $striptags);
-	$tags = explode(',', $striptags);
+      // these situations require limiting
+      if (($type == 'posts' && is_front_page()) || 
+	  ($type == 'page' && is_front_page() && $static_limit) || 
+	  ($type == 'page' && is_home() && $nonfp_limit)) {
+      
+	//if (($fp_only && !is_front_page()) || (!$fp_only && !is_home()) || $cuttype == 'none') return $content;
+	//if (!is_front_page() || get_option('show_on_front') != 'posts') return $content;
+	//if ($cuttype == 'none') return $content;
 
-	// strip the tags
-	foreach ($tags as $tag) {	  
-	  if ($tag == 'all') $content = strip_tags($content, '<p>');
-	  else $content = preg_replace('/<\/?'.$tag.'( [^>]+)?>/', '', $content, -1, $cnt);
-	}
-      }      
+	if ($striptags != '') {
+	  // make sure tags to strip are clean
+	  $striptags = str_replace(array('<',' ','>'), '', $striptags);
+	  $tags = explode(',', $striptags);
 
-      switch($cuttype) {
-      case "word":	
-	$tmp = explode(' ', $content);       	
-	$length = count($tmp);
-	if ($length > $truncate) {
-	  $final = implode(' ', array_slice($tmp, 0, $truncate));
-	  $final = FPManager::fix_html($final, $ending);
-	} else {
-	  $final = $content;
-	  $readon = FALSE;
-	}
-	break;
-
-      case "letter":
-	$length = strlen($content);
-	if ($length > $truncate) {
-	  $final = FPManager::fix_html(substr($content, 0, $truncate), $ending);
-	} else {
-	  $final = $content;
-	  $readon = FALSE;
-	}
-	break;
-
-      case "paragraph":
-	$final = "";
-	$idx = 0;
-
-	$tmp = explode('</p>', $content);
-
-	// clean array of whitespace/null values
-	$tmp = array_values(array_filter(array_map("trim", $tmp)));
-
-	$length = count($tmp);
-	if ($length > $truncate) {
-	  while ($idx < $truncate) {
-	    $final .= $tmp[$idx]."</p>";
-	    $idx++;
+	  // strip the tags
+	  foreach ($tags as $tag) {	  
+	    if ($tag == 'all') $content = strip_tags($content, '<p>');
+	    else $content = preg_replace('/<\/?'.$tag.'( [^>]+)?>/', '', $content, -1, $cnt);
 	  }
-	} else {
-	  $final = $content;
-	  $readon = FALSE;
-	}
-	break;
-      }
-            
-      if ($readon) {
-	$final .= "\r\n".'<div class="fpm_readon"><a href="' . get_permalink() . '" rel="nofollow">';
-	$final .= utf8_encode($linktext) . "</a></div>\r\n";
-      }
+	}      
 
-      return $final;
+	switch($cuttype) {
+	case "word":	
+	  $tmp = explode(' ', $content);       	
+	  $length = count($tmp);
+	  if ($length > $truncate) {
+	    $final = implode(' ', array_slice($tmp, 0, $truncate));
+	    $final = FPManager::fix_html($final, $ending);
+	  } else {
+	    $final = $content;
+	    $readon = FALSE;
+	  }
+	  break;
+
+	case "letter":
+	  $length = strlen($content);
+	  if ($length > $truncate) {
+	    $final = FPManager::fix_html(substr($content, 0, $truncate), $ending);
+	  } else {
+	    $final = $content;
+	    $readon = FALSE;
+	  }
+	  break;
+
+	case "paragraph":
+	  $final = "";
+	  $idx = 0;
+
+	  $tmp = explode('</p>', $content);
+
+	  // clean array of whitespace/null values
+	  $tmp = array_values(array_filter(array_map("trim", $tmp)));
+
+	  $length = count($tmp);
+	  if ($length > $truncate) {
+	    while ($idx < $truncate) {
+	      $final .= $tmp[$idx]."</p>";
+	      $idx++;
+	    }
+	  } else {
+	    $final = $content;
+	    $readon = FALSE;
+	  }
+	  break;
+	}
+            
+	if ($readon) {
+	  $final .= "\r\n".'<div class="fpm_readon"><a href="' . get_permalink() . '" rel="nofollow">';
+	  $final .= utf8_encode($linktext) . "</a></div>\r\n";
+	}
+
+	return $final;
+      } 
+
+      return $content;
     }
+
+
 
     function trim_val($val) {
       //return trim($val);
@@ -242,17 +276,27 @@ if (!class_exists("FPManager")) {
       global $wp_query;
 
       $type = get_option('show_on_front');
-      //$category = get_option('fpm_post_category');
       $categories = get_option("fpm_post_category"); 
       $numposts = intval(get_option('fpm_post_numposts'));
-      
-      if (is_front_page() && $type == 'posts') {
+      $apply_nonfp = get_option('fpm_apply_nonfp');
+
+      // these situations require alteration
+      //if (is_front_page() && $type == 'posts') {
+      if (($type == 'posts' && is_front_page()) || 
+	  ($type == 'page' && is_home() && $apply_nonfp)) {
+            
 	// limit categories shown
 	if (preg_match('/^([1-9]{1}[0-9]*,?)+$/', $categories)) $wp_query->query_vars['cat'] = $categories;
-	//print_r($wp_query->query_vars['cat']); exit;
-	// limit number of posts showd
+
+	// limit number of posts shown
 	$wp_query->query_vars['showposts'] = $numposts;
       }
+    }
+
+    function set_title() {
+      global $wp_query;
+      $wp_query->query_vars['cat'] = "";
+      $wp_query->query_vars['category_in'] = Array();
     }
 
   }
@@ -265,8 +309,9 @@ if (class_exists("FPManager")) {
 
 // actions/filters
 if (isset($fpmanager)) {
-  add_filter('pre_get_posts', array('FPManager', 'alter_query'));
-  add_filter('the_content', array('FPManager', 'display'));
+  add_filter('pre_get_posts', array('FPManager', 'alter_query')); // deal with which posts to show
+  add_filter('the_content', array('FPManager', 'display')); // deal with how much of each post to show
+  add_action('get_header', array('FPManager', 'set_title')); // get rid of title category if set
 
   // administrative options
   add_action('admin_menu', array('FPManager', 'add_admin_page'));

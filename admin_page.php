@@ -9,6 +9,18 @@ $input_number = get_option("fpm_post_number");
 $input_linktext = htmlspecialchars(get_option("fpm_post_linktext"));
 $input_ending = htmlspecialchars(get_option("fpm_post_ending"));
 $striptags = htmlspecialchars(get_option("fpm_striptags"));
+$apply_nonfp = htmlspecialchars(get_option("fpm_apply_nonfp"));
+$static_limit = htmlspecialchars(get_option("fpm_static_limit"));
+$nonfp_limit = htmlspecialchars(get_option("fpm_nonfp_limit"));
+
+$apply_nonfp_yes = $apply_nonfp == 1 ? 'checked ': '';
+$apply_nonfp_no = $apply_nonfp == 0 ? 'checked ': '';
+
+$static_limit_yes = $static_limit == 1 ? 'checked ': '';
+$static_limit_no = $static_limit == 0 ? 'checked ': '';
+
+$nonfp_limit_yes = $nonfp_limit == 1 ? 'checked ': '';
+$nonfp_limit_no = $nonfp_limit == 0 ? 'checked ': '';
 
 $letter_sel = $limitpostby == "letter" ? 'selected' : '';
 $word_sel = $limitpostby == "word" ? 'selected' : '';
@@ -75,8 +87,20 @@ foreach ($cats as $cat) {
 (comma-separated, e.g. <em>img, div, hr</em>. Use <em>all</em> to remove all HTML)</td>
 </tr>
 
-<tr><td colspan="2">&nbsp;</td></tr>
+<tr>
+<td><strong>Apply to non-frontpage posts page? </strong></td>
+<td>
+<input type="radio" name="fpm_apply_nonfp" value="1" <?php echo $apply_nonfp_yes; ?>/> yes 
+<input type="radio" name="fpm_apply_nonfp" value="0" <?php echo $apply_nonfp_no; ?>/> no 
+(Should post selection happen to the main posts page when it isn&rsquo;t your front page?)
+</td>
+</tr>
+</table>
 
+<br />
+<h3>Limitation Options</h3>
+
+<table>
 <tr>
 <td><strong>Limit post(s) by</strong></td> 
 
@@ -94,7 +118,7 @@ foreach ($cats as $cat) {
 
 <table id="truncate" <?php echo $option_display; ?>>
 <tr>
-<td width="160" valign="top"><strong>Limitation options</strong></td>
+<td width="160" valign="top"><strong>Limit details</strong></td>
 
 <td>
 <input name="fpm_post_number" type="text" value="<?php echo $input_number; ?>" /> 
@@ -105,6 +129,27 @@ foreach ($cats as $cat) {
   
   <input name="fpm_post_ending" type="text" value="<?php echo $input_ending; ?>" /> 
   <strong>Text ending</strong> (for word/character limit only)<br />
+</td>
+</tr>
+</table>
+
+<table>
+
+<tr>
+<td><strong>Apply limit to static front page? </strong></td>
+<td>
+<input type="radio" name="fpm_static_limit" value="1" <?php echo $static_limit_yes; ?>/> yes 
+<input type="radio" name="fpm_static_limit" value="0" <?php echo $static_limit_no; ?>/> no 
+(Should content limitation occur when a page is your frontpage, or not?)
+</td>
+</tr>
+
+<tr>
+<td><strong>Apply limit to non frontpage posts page? </strong></td>
+<td>
+<input type="radio" name="fpm_nonfp_limit" value="1" <?php echo $nonfp_limit_yes; ?>/> yes 
+<input type="radio" name="fpm_nonfp_limit" value="0" <?php echo $nonfp_limit_no; ?>/> no 
+(Should content limitation be done to the main post page, when it isn&rsquo;t your frontpage?)
 </td>
 </tr>
 </table>
