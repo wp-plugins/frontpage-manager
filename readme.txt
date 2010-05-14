@@ -36,14 +36,14 @@ I have only tested this plugin on WordPress 2.8 since that is the platform I wro
 == Frequently Asked Questions ==
 = Does this plugin also apply if you have a static page set as your frontpage rather than latest posts? =
 
-No. At the moment, if you have a static page set for your frontpage, the plugin will effectively be ignored. This may change in the future.
+Yes. There are settings in the back end such that you can apply all options to your main posts page even if you have a static page as the front page, and you can also apply the word/character/paragraph limitation to the page that is your static front page.
 
 = How can I style how the read more link looks? =
 
 The link is contained within a div that has been given the class 'fpm`_`readon'. Simply add .fpm`_`readon{} to your theme's style.css and put whatever CSS styling you want in it.
 
 == Download ==
-[Version 1.0](http://kirilisa.com/downloads/projects/wordpress/frontpage-manager_1.0.zip "Download version 1.0")
+[Version 1.1](http://kirilisa.com/downloads/projects/wordpress/frontpage-manager_1.1.zip "Download version 1.1")
 
 == Changelog ==
 = 0.9 beta -- December 2 2009 = 
@@ -54,6 +54,12 @@ The link is contained within a div that has been given the class 'fpm`_`readon'.
 * Allowed option 'all' for 'Tags to strip' for those who wish to get rid of all HTML markup
 * Fixed small bug where 'Tags to strip' field was disappearing inappropriately
 
-= 1.0 December 2009 =
+= 1.0 December 7 2009 =
 * Implemented selection of multiple categories from which posts will be displayed
 * Made it so 'Read more linktext' and 'Text ending' are not displayed when post is too short to require limiting
+
+= 1.1 May 14 2010 =
+* Fixed the PHP error that showed up when no category was selected, and put in a warning
+* Made it so you can apply the word/character/paragraph limitation to a static front page
+* Made it so you can apply both post category/number limitation and word/character/paragraph limitation to main posts page, when it isn't the front page (i.e. you have a static front page)
+* Made it so that the post category is not displayed in the title of the homepage
