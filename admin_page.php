@@ -12,6 +12,7 @@ $striptags = htmlspecialchars(get_option("fpm_striptags"));
 $apply_nonfp = htmlspecialchars(get_option("fpm_apply_nonfp"));
 $static_limit = htmlspecialchars(get_option("fpm_static_limit"));
 $nonfp_limit = htmlspecialchars(get_option("fpm_nonfp_limit"));
+$kill_title = get_option("fpm_kill_title");
 
 $apply_nonfp_yes = $apply_nonfp == 1 ? 'checked ': '';
 $apply_nonfp_no = $apply_nonfp == 0 ? 'checked ': '';
@@ -21,6 +22,9 @@ $static_limit_no = $static_limit == 0 ? 'checked ': '';
 
 $nonfp_limit_yes = $nonfp_limit == 1 ? 'checked ': '';
 $nonfp_limit_no = $nonfp_limit == 0 ? 'checked ': '';
+
+$kill_title_yes = $kill_title == 1 ? 'checked ': '';
+$kill_title_no = $kill_title == 0 ? 'checked ': '';
 
 $letter_sel = $limitpostby == "letter" ? 'selected' : '';
 $word_sel = $limitpostby == "word" ? 'selected' : '';
@@ -95,6 +99,15 @@ foreach ($cats as $cat) {
 (Should post selection happen to the main posts page when it isn&rsquo;t your front page?)
 </td>
 </tr>
+
+<tr>
+<td><strong>Hide category in page title? </strong></td>
+<td>
+<input type="radio" name="fpm_kill_title" value="1" <?php echo $kill_title_yes; ?>/> yes 
+<input type="radio" name="fpm_kill_title" value="0" <?php echo $kill_title_no; ?>/> no 
+</td>
+</tr>
+
 </table>
 
 <br />
