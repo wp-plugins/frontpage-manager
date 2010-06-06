@@ -2,9 +2,8 @@
   /*
    Plugin Name: Frontpage Manager
    Plugin URI: http://kirilisa.com/projects/frontpage-manager/
-   Description: Frontpage manager lets you customize how frontpage posts appear in a number 
-   of ways: limiting by category, number of posts, number of words/characters/paragraphs.   
-   Version: 1.1
+   Description: Frontpage manager lets you customize how your frontpage and/or main posts page appears in a number of ways: limiting by category, number of posts, number of words/characters/paragraphs.   
+   Version: 1.2
    Author: Elise Bosse
    Author URI: http://kirilisa.com
 
@@ -43,6 +42,7 @@ if (!class_exists("FPManager")) {
       add_option("fpm_apply_nonfp", 1);      
       add_option("fpm_static_limit", 0);      
       add_option("fpm_nonfp_limit", 1);      
+      add_option("fpm_kill_title", 0);      
     }
 
     function deactivate() {
@@ -57,6 +57,7 @@ if (!class_exists("FPManager")) {
       delete_option("fpm_apply_nonfp");      
       delete_option("fpm_static_limit");      
       delete_option("fpm_nonfp_limit");      
+      delete_option("fpm_kill_title");      
     }
 
     function get_all_categories() {
@@ -87,17 +88,13 @@ if (!class_exists("FPManager")) {
 	$apply_nonfp = intval(trim($_POST['fpm_apply_nonfp']));        
 	$static_limit = intval(trim($_POST['fpm_static_limit']));        
 	$nonfp_limit = intval(trim($_POST['fpm_nonfp_limit']));        
+	$kill_title = intval(trim($_POST['fpm_kill_title']));        
 
 	// default number
 	if ($number == '') {
 	  if ($cuttype == 'paragraph' || $cuttype == 'none') $number = '1';
 	  else if ($cuttype == 'letter') $number = '600';
 	  else if ($cuttype == 'word') $number = '200';
-	}
-
-	// default readmore @@@ removed for 0.91 beta
-	if ($linktext == '') {
-	  //$linktext = utf8_encode("view full post &raquo;");
 	}
 
 	// default numposts
@@ -129,6 +126,7 @@ if (!class_exists("FPManager")) {
 	update_option("fpm_apply_nonfp", $apply_nonfp);
 	update_option("fpm_static_limit", $static_limit);
 	update_option("fpm_nonfp_limit", $nonfp_limit);
+	update_option("fpm_kill_title", $kill_title);
       }
       
       $cats = FPManager::get_all_categories();
@@ -295,8 +293,11 @@ if (!class_exists("FPManager")) {
 
     function set_title() {
       global $wp_query;
-      $wp_query->query_vars['cat'] = "";
-      $wp_query->query_vars['category_in'] = Array();
+      $kill_title = get_option('fpm_kill_title');
+      if ($kill_title == 1) {
+	$wp_query->query_vars['cat'] = "";
+	$wp_query->query_vars['category_in'] = Array();
+      }
     }
 
   }

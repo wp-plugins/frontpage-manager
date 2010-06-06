@@ -3,19 +3,20 @@ Contributors: kirilisa
 Donate link: http://kirilisa.com/
 Tags: front page, frontpage, limit, category limit, paragraph limit, word limit, character limit, limit posts
 Requires at least: 2.8
-Tested up to: 2.8.6
+Tested up to: 2.9.2
 Stable tag: trunk
 
-Lets you customize how frontpage posts appear in a number of ways: limiting by category/ies, number of posts, number of words/characters/paragraphs.
+Lets you customize how your frontpage and/or main posts page appears in a number of ways: limiting by category/ies, number of posts, number of words/characters/paragraphs.
 
 == Description ==
 Frontpage Manager allows you to customize how the posts appear on your frontpage in several different ways. 
 
 * you can have the posts drawn from all categories or a subset of your choosing 
-* you can choose how many posts should display on the front page (this is distinct from WordPress' built-in Reading Settings which applies to all blog pages)
-* you can have each frontpage post limited in length by number of characters, words, or paragraphs
-* you can choose which HTML tags should be stripped from frontpage posts
+* you can choose how many posts should display (this is distinct from WordPress' built-in Reading Settings which applies to all blog pages)
+* you can have each post limited in length by number of characters, words, or paragraphs
+* you can choose which HTML tags should be stripped from posts
 * you can specify a read more link, etc. if you like 
+* you can hide the category in the page title, if you wish
 
 The plugin will attempt to make sure that any tags that are interrupted by the post-limiting feature are matched so as not to cause formatting issues.
 
@@ -28,7 +29,7 @@ OR
 1. Set your preferred settings through the Frontpage Manager section under WordPress' Settings menu
 
 == Compatibility ==
-I have only tested this plugin on WordPress 2.8 since that is the platform I wrote it on.
+I have tested this plugin from WordPress 2.8.
 
 == Screenshots ==
 1. See screenshot-1.png for a view of the Settings.
@@ -43,7 +44,7 @@ Yes. There are settings in the back end such that you can apply all options to y
 The link is contained within a div that has been given the class 'fpm`_`readon'. Simply add .fpm`_`readon{} to your theme's style.css and put whatever CSS styling you want in it.
 
 == Download ==
-[Version 1.1](http://kirilisa.com/downloads/projects/wordpress/frontpage-manager_1.1.zip "Download version 1.1")
+[Version 1.2](http://kirilisa.com/downloads/projects/wordpress/frontpage-manager_1.2.zip "Download version 1.2")
 
 == Changelog ==
 = 0.9 beta -- December 2 2009 = 
@@ -63,3 +64,6 @@ The link is contained within a div that has been given the class 'fpm`_`readon'.
 * Made it so you can apply the word/character/paragraph limitation to a static front page
 * Made it so you can apply both post category/number limitation and word/character/paragraph limitation to main posts page, when it isn't the front page (i.e. you have a static front page)
 * Made it so that the post category is not displayed in the title of the homepage
+
+= 1.2 June 6 2010 =
+* Bug fix: Made the hide category in page title a togglable option in the backend since it doesn't always seem to work :-P This is just a quick workaround until I have the time to devote to figuring out why my method of hiding the category in page title, doesn't always work (sigh!)
