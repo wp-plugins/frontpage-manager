@@ -3,7 +3,7 @@
    Plugin Name: Frontpage Manager
    Plugin URI: http://kirilisa.com/projects/frontpage-manager/
    Description: Frontpage manager lets you customize how your frontpage and/or main posts page appears in a number of ways: limiting by category, number of posts, number of words/characters/paragraphs.   
-   Version: 1.2
+   Version: 1.3
    Author: Elise Bosse
    Author URI: http://kirilisa.com
 
@@ -283,8 +283,11 @@ if (!class_exists("FPManager")) {
       if (($type == 'posts' && is_front_page()) || 
 	  ($type == 'page' && is_home() && $apply_nonfp)) {
             
-	// limit categories shown
-	if (preg_match('/^([1-9]{1}[0-9]*,?)+$/', $categories)) $wp_query->query_vars['cat'] = $categories;
+	// limit categories shown in 2 different ways
+	if (preg_match('/^([1-9]{1}[0-9]*,?)+$/', $categories)) {
+	  $wp_query->query_vars['cat'] = $categories;
+	  $wp_query->query_vars['category__in'] = explode(',', $categories);
+	}
 
 	// limit number of posts shown
 	$wp_query->query_vars['showposts'] = $numposts;
