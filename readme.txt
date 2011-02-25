@@ -3,7 +3,7 @@ Contributors: kirilisa
 Donate link: http://kirilisa.com/
 Tags: front page, frontpage, limit, category limit, paragraph limit, word limit, character limit, limit posts
 Requires at least: 2.8
-Tested up to: 2.9.2
+Tested up to: 3.1
 Stable tag: trunk
 
 Lets you customize how your frontpage and/or main posts page appears in a number of ways: limiting by category/ies, number of posts, number of words/characters/paragraphs.
@@ -44,7 +44,7 @@ Yes. There are settings in the back end such that you can apply all options to y
 The link is contained within a div that has been given the class 'fpm`_`readon'. Simply add .fpm`_`readon{} to your theme's style.css and put whatever CSS styling you want in it.
 
 == Download ==
-[Version 1.2](http://kirilisa.com/downloads/projects/wordpress/frontpage-manager_1.2.zip "Download version 1.2")
+[Version 1.3](http://kirilisa.com/downloads/projects/wordpress/frontpage-manager_1.3.zip "Download version 1.3")
 
 == Changelog ==
 = 0.9 beta -- December 2 2009 = 
@@ -67,3 +67,6 @@ The link is contained within a div that has been given the class 'fpm`_`readon'.
 
 = 1.2 June 6 2010 =
 * Bug fix: Made the hide category in page title a togglable option in the backend since it doesn't always seem to work :-P This is just a quick workaround until I have the time to devote to figuring out why my method of hiding the category in page title, doesn't always work (sigh!)
+
+= 1.3 February 25 2011 =
+* Bug fix: The existing method of limiting by category was not working with WordPress 3.1 so I added in another method that should.
