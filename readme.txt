@@ -70,3 +70,4 @@ The link is contained within a div that has been given the class 'fpm`_`readon'.
 
 = 1.3 February 25 2011 =
 * Bug fix: The existing method of limiting by category was not working with WordPress 3.1 so I added in another method that should.
+* Bug fix: Made a small change having to do with hiding the category in the page title.
