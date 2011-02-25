@@ -297,9 +297,11 @@ if (!class_exists("FPManager")) {
     function set_title() {
       global $wp_query;
       $kill_title = get_option('fpm_kill_title');
-      if ($kill_title == 1) {
+      $apply_nonfp = get_option('fpm_apply_nonfp');
+
+      if ($kill_title && ($apply_nonfp || is_front_page())) {
 	$wp_query->query_vars['cat'] = "";
-	$wp_query->query_vars['category_in'] = Array();
+	$wp_query->query_vars['category__in'] = Array();
       }
     }
 
